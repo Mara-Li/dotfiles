@@ -1,4 +1,17 @@
-winget install Microsoft.VisualStudioCode Starship.Starship Chocolatey.Chocolatey SomePythonThings.WingetUIStore junegunn.fzf Microsoft.PowerToys Microsoft.PowerShell gerardog.gsudo Git.Git GitHub.cli JanDeDobbeleer.OhMyPosh sharkdp.fd
-winget install --id=Discord.Discord  -e
-winget install --id=Vendicated.Vencord.PTB  -e
+winget install `
+  Microsoft.PowerToys `
+  Microsoft.PowerShell `
+  JanDeDobbeleer.OhMyPosh `
+  Chocolatey.Chocolatey `
+  Microsoft.VisualStudioCode `
+  SomePythonThings.WingetUIStore `
+  junegunn.fzf `
+  gerardog.gsudo `
+  Git.Git `
+  GitHub.cli `
+  sharkdp.fd `
+  Starship.Starship `
+  Discord.Discord `
+  Vendicated.Vencord.PTB
+  
 Install-Module -Name PSFzf -Scope CurrentUser
