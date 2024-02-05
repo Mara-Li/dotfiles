@@ -1,10 +1,8 @@
 Import-Module posh-git
 Import-Module oh-my-posh
-set-alias -name pn -value pnpm
 Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
 $commandOverride = [ScriptBlock]{ param($Location) Write-Host $Location }
-oh-my-posh init pwsh --config C:\Users\Lili\AppData\Local\oh-my-posh\themes\bubblesline.omp.json | Invoke-Expression
-
+oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\mojada.omp.json" | Invoke-Expression
 # pass your override to PSFzf:
 Set-PsFzfOption -AltCCommand $commandOverride
 Set-PsFzfOption -EnableAliasFuzzyEdit
@@ -17,24 +15,21 @@ Set-PsFzfOption -EnableAliasFuzzyScoop
 Set-PsFzfOption -EnableAliasFuzzyZLocation
 Set-PsFzfOption -EnableFd
 Set-PsFzfOption -EnableAliasFuzzyGitStatus
-
-
-Enable-PoshTooltips
-Enable-PoshLineError
-$ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
-$env:POSH_GIT_ENABLED = $true
 Set-PSReadLineOption -PredictionSource History
 Set-PsFzfOption -TabExpansion
 Set-PSReadLineKeyHandler -Key Tab -ScriptBlock { Invoke-FzfTabCompletion }
 Set-PSReadlineKeyHandler -Key UpArrow -Function HistorySearchBackward
 Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
+
+Enable-PoshTooltips
+Enable-PoshLineError
+$ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
+$env:POSH_GIT_ENABLED = $true
+
 if (Test-Path($ChocolateyProfile)) {
   Import-Module "$ChocolateyProfile"
 }
-$AppData = "$env:APPDATA"
-$localApp = "$env:LOCALAPPDATA"
-New-Alias which get-command
-New-Alias touch New-Item
+
 function eval-ssh (){
     Start-Service ssh-agent
 }
@@ -43,6 +38,10 @@ function runFish {
   bash -c fish
 }
 
+function Start-TsNodeSkipProject {ts-node --skip-project}
+
+Set-Alias -Name ts -value "Start-TsNodeSkipProject" -Option AllScope
+set-alias -name pn -value pnpm
 Set-Alias -Name ls -value "Get-ChildItem" -Option AllScope
 Set-Alias -Name cat -value "Get-Content" -Option AllScope
 Set-Alias -Name cp -value "Copy-Item" -Option AllScope
@@ -51,17 +50,17 @@ Set-Alias -Name rm -value "Remove-Item" -Option AllScope
 Set-Alias -Name rmdir -value "Remove-Item" -Option AllScope
 Set-Alias -Name grep -value "Select-String" -Option AllScope
 Set-Alias -Name df -value "Get-PSDrive" -Option AllScope
-function Start-TsNodeSkipProject {ts-node --skip-project}
-Set-Alias -Name ts -value "Start-TsNodeSkipProject" -Option AllScope
-
 New-Alias -Force -Name fish -value runFish -Option AllScope
+New-Alias which get-command
+New-Alias touch New-Item
 
-$github = "E:\Documents\Github"
-$pingouin = "E:\Documents\Github\Pingouin\.obsidian\plugins"
-$vault = "E:\Constellation"
-$scripts = "E:\Documents\Github\SimpleScript\Python"
-$downloads = "E:\Téléchargements"
-$publisher = "E:\Documents\Github\Obsidian Publisher"
+# Path alias and diverse setup
+$AppData = "$env:APPDATA"
+$localApp = "$env:LOCALAPPDATA"
+$github = "$env:USERPROFILE\Documents\Github"
+$pingouin = "$github\Pingouin\.obsidian\plugins"
+$scripts = "$env:USERPROFILE\Documents\Github\SimpleScript\Python"
+$downloads = "$env:USERPROFILE\Downloads"
 
 function mkdir {
     param (
@@ -73,7 +72,7 @@ function mkdir {
 }
 
 function run() {
-  $folder = "E:\Documents\Github\SimpleScript\Python"
+  $folder = $scripts
   $file = $args[0]
   $cmd = $args[1..$args.Length]
   python "$folder\$file.py" $cmd
@@ -86,21 +85,6 @@ function obsidiandev {
     Invoke-Expression $cmd
     cd $folder
     code .
-}
-
-function plug {
-  cd ~/BetterDiscord;
-  & git pull
-  & pnpm install
-  & C:\Users\Lili\AppData\Local\DiscordCanary\Update.exe --processStart DiscordCanary.exe
-  & Stop-Process -name DiscordCanary -Force
-  & C:\Users\Lili\AppData\Local\DiscordCanary\Update.exe --processStart DiscordCanary.exe
-  & pnpm run inject canary
-}
-
-function initPlugin {
-  cd $Pingouin
-  pnpm exec @lisandra-dev/obsidian-plugin@latest
 }
 
 function vps {
@@ -116,7 +100,7 @@ function ora {
 }
 
 function Obsidian-Tools {
-  $folder = "E:\Documents\Github\SimpleScript\Python\Obsidian-tools"
+  $folder = "$scripts\Obsidian-tools"
   $file = $args[0]
   $cmd = $args[1..$args.Length]
   python "$folder\$file.py" $cmd
@@ -174,9 +158,4 @@ function lint {
   $cmd = "eslint --no-eslintrc --fix '$path/**/*.{js,ts,json,html}' -c '$env:USERPROFILE\.eslintrc.js'"
   Invoke-Expression $cmd
   Write-Host -ForeGroundColor Green "🎉 Done"
-}
-
-function gpt {
-  cd $github\open-access-gpt\app
-  npm start
 }
