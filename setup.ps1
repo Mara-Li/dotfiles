@@ -1,3 +1,2 @@
-choco install espanso starship vscode fzf -y -s'https://chocolatey.org/api/v2/'
-winget install Microsoft.PowerToys --source winget
-Install-Module -Name PSFzf
+winget install Microsoft.VisualStudioCode Starship.Starship Chocolatey.Chocolatey SomePythonThings.WingetUIStore junegunn.fzf Microsoft.PowerToys Microsoft.PowerShell gerardog.gsudo Git.Git GitHub.cli 
+Install-Module -Name PSFzf -Scope CurrentUser
