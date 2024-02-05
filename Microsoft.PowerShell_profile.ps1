@@ -1,9 +1,8 @@
 Import-Module posh-git
 Import-Module oh-my-posh
-Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
-$commandOverride = [ScriptBlock]{ param($Location) Write-Host $Location }
-oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\mojada.omp.json" | Invoke-Expression
+
 # pass your override to PSFzf:
+Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t' -PSReadlineChordReverseHistory 'Ctrl+r'
 Set-PsFzfOption -AltCCommand $commandOverride
 Set-PsFzfOption -EnableAliasFuzzyEdit
 Set-PsFzfOption -EnableAliasFuzzyFasd
@@ -15,30 +14,20 @@ Set-PsFzfOption -EnableAliasFuzzyScoop
 Set-PsFzfOption -EnableAliasFuzzyZLocation
 Set-PsFzfOption -EnableFd
 Set-PsFzfOption -EnableAliasFuzzyGitStatus
-Set-PSReadLineOption -PredictionSource History
 Set-PsFzfOption -TabExpansion
+
+# PSReadLine
+Set-PSReadLineOption -PredictionSource History
 Set-PSReadLineKeyHandler -Key Tab -ScriptBlock { Invoke-FzfTabCompletion }
 Set-PSReadlineKeyHandler -Key UpArrow -Function HistorySearchBackward
 Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
 
+# Oh my posh
 Enable-PoshTooltips
 Enable-PoshLineError
-$ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
-$env:POSH_GIT_ENABLED = $true
+oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\mojada.omp.json" | Invoke-Expression
 
-if (Test-Path($ChocolateyProfile)) {
-  Import-Module "$ChocolateyProfile"
-}
-
-function eval-ssh (){
-    Start-Service ssh-agent
-}
-
-function runFish {
-  bash -c fish
-}
-
-function Start-TsNodeSkipProject {ts-node --skip-project}
+# Alias
 
 Set-Alias -Name ts -value "Start-TsNodeSkipProject" -Option AllScope
 set-alias -name pn -value pnpm
@@ -61,6 +50,9 @@ $github = "$env:USERPROFILE\Documents\Github"
 $pingouin = "$github\Pingouin\.obsidian\plugins"
 $scripts = "$env:USERPROFILE\Documents\Github\SimpleScript\Python"
 $downloads = "$env:USERPROFILE\Downloads"
+$env:POSH_GIT_ENABLED = $true
+$commandOverride = [ScriptBlock]{ param($Location) Write-Host $Location }
+
 
 function mkdir {
     param (
@@ -70,6 +62,17 @@ function mkdir {
 
     New-Item -ItemType Directory -Path $Path | Out-Null
 }
+
+
+function eval-ssh (){
+    Start-Service ssh-agent
+}
+
+function runFish {
+  bash -c fish
+}
+
+function Start-TsNodeSkipProject {ts-node --skip-project}
 
 function run() {
   $folder = $scripts
