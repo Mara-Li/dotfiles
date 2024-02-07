@@ -15,3 +15,4 @@ winget install `
   Vendicated.Vencord.PTB
   
 Install-Module -Name PSFzf -Scope CurrentUser
+Install-Module PSReadLine -Scope CurrentUser
